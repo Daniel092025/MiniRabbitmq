@@ -12,12 +12,18 @@ using var connection = await factory.CreateConnectionAsync();
 using var channel = await connection.CreateChannelAsync();
 
 
-await channel.QueueDeclareAsync(
-    queue: "game-events",
-    durable: false,
-    exclusive: false,
-    autoDelete: false,
-    arguments: null
+await channel.ExchangeDeclareAsync(
+    exchange: "game-events-exchange",
+    type: ExchangeType.Fanout
+);
+
+var queueResult = await channel.QueueDeclareAsync();
+var queueName = queueResult.QueueName;
+
+await channel.QueueBindAsync(
+    queue: queueName,
+    exchange: "game-events-exchange",
+    routingKey: ""
 );
 
 Console.WriteLine("EventProcessor is now listening for game events... \n");

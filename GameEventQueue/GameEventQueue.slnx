@@ -1,4 +1,6 @@
 <Solution>
   <Project Path="EventProcessor/EventProcessor.csproj" />
   <Project Path="GameServer/GameServer.csproj" />
+  <Project Path="Logger/Logger.csproj" />
+  <Project Path="Notifier/Notifier.csproj" />
 </Solution>

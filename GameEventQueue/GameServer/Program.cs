@@ -9,12 +9,9 @@ var factory = new ConnectionFactory { HostName = "localhost" };
 using var connection = await factory.CreateConnectionAsync();
 using var channel = await connection.CreateChannelAsync();
 
-await channel.QueueDeclareAsync(
-    queue: "game-events",
-    durable: false,
-    exclusive: false,
-    autoDelete: false,
-    arguments: null
+await channel.ExchangeDeclareAsync(
+    exchange: "game-events-exchange",
+    type: ExchangeType.Fanout
 );
 
 Console.Write("Enter your player name: ");
@@ -52,8 +49,8 @@ while (true)
     var body = Encoding.UTF8.GetBytes(json);
 
     await channel.BasicPublishAsync(
-        exchange: "",
-        routingKey: "game-events",
+        exchange: "game-events-exchange",
+        routingKey: "",
         body: body
     );
 
