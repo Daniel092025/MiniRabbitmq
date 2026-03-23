@@ -64,7 +64,7 @@ consumer.ReceivedAsync += async (model, ea) =>
 };
 
 await channel.BasicConsumeAsync(
-    queue: "game-events",
+    queue: queueName,
     autoAck: true,
     consumer: consumer
 );

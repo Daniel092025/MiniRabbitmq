@@ -1,6 +1,4 @@
 ﻿using RabbitMQ.Client;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -14,16 +12,10 @@ await channel.ExchangeDeclareAsync(
     type: ExchangeType.Fanout
 );
 
-Console.Write("Enter your player name: ");
-var playerName = Console.ReadLine()?.Trim();
+var playerName = args.Length > 0 ? args[0] : "Player1";
+var targetPlayer = args.Length > 1 ? args[1] : "Player2";
 
-if (string.IsNullOrEmpty(playerName))
-{
-    Console.WriteLine("No name entered, defaulting to 'PlayerOne'");
-    playerName = "PlayerOne";
-}
-
-Console.WriteLine($"\n {playerName} connected. Commands: kill, score, quit\n");
+Console.WriteLine($"\n💩 {playerName} connected. Target: {targetPlayer}. Commands: kill, score, quit\n");
 
 
 while (true)
@@ -32,8 +24,8 @@ while (true)
 
     GameEvent? gameEvent = input switch
     {
-        "kill"  => new GameEvent("PLAYER_KILL", playerName, 1, DateTime.Now),
-        "score" => new GameEvent("SCORE_UPDATE", playerName, 100, DateTime.Now),
+        "kill"  => new GameEvent("PLAYER_KILL", playerName, targetPlayer, 1, DateTime.Now),
+        "score" => new GameEvent("SCORE_UPDATE", playerName, null,  100, DateTime.Now),
         "quit"  => null,
         _       => null
     };
@@ -57,4 +49,4 @@ while (true)
     Console.WriteLine($"sent: {gameEvent.Type} by {gameEvent.Player}");
 }
 
-record GameEvent(string Type, string Player, int Value, DateTime Timestamp);
+record GameEvent(string Type, string Player, string? TargetPlayer, int Value, DateTime Timestamp);
